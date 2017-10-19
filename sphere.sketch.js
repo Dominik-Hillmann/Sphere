@@ -4,57 +4,50 @@ const HEIGHT = 300;
 
 var circlePositions = [];
 var circleDists = [];
+var filteredPositions = [];
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 
 
 function setup()
 {
    var canvas = createCanvas(WIDTH, HEIGHT);
-
-   // getting all points that make a cirlce with RADIUS
-   /*for(var x = 1; x <= WIDTH; x++)
-   {
-      for(var y = 1; y <= HEIGHT; y++)
-      {
-         if(haveDistance(x, y, middlePoint, RADIUS))
-         {
-            circlePoints.push(new Position(x, y));
-            console.log("Geschafft: ", circlePoints[circlePoints.length]);
-         }
-      }
-   }*/
+   canvas.parent("sketch-holder");
 
    // einfach jeden Punkt mit Abstand reinmachen
-
    for(var x = 1; x <= WIDTH; x++)
    {
       for(var y = 1; y <= HEIGHT; y++)
       {
          circlePositions.push(new Position(x, y));
-         circleDists.push(reDistance(x, y, middlePoint));
+         circleDists.push(distance(x, y, middlePoint));
       }
    }
 
-   console.log("Dists", circleDists);
-   console.log("pos", circlePositions);
-   var filteredPositions = [];
+   // filteres for positions that are on the edge of the circle
    for(var i = 0; i < circlePositions.length; i++)
    {
       if(circleDists[i] == SPHERE_RADIUS)
          filteredPositions.push(circlePositions[i]);
    }
-   console.log("Filtered", filteredPositions);
-   cirlcePositions = filteredPositions;
-   // circlePoints.push("LALALALA");
+   console.log("Filter", filteredPositions);
+   // cirlcePositions = filteredPositions;
+   console.log("Cricle", circlePositions);
+   circlePositions = circlePositions.filter(function(element, index, array)
+   {
+      return (array[index].x < 50);
+   });
    console.log(circlePositions);
 }
 
 function draw()
 {
+   // background(255, 255, 255);
    background(0, 0, 0);
+   //ellipse(middlePoint.x, middlePoint.y, 100);
 
-
-   ellipse(middlePoint.x, middlePoint.y, SPHERE_RADIUS);
+   stroke(255, 0, 0);
+   for(var i = 0; i < filteredPositions.length; i++)
+      ellipse(filteredPositions[i].x, filteredPositions[i].y, 1);
 
    // finding a way to put dots into a circle
 
