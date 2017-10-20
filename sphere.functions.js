@@ -19,3 +19,7 @@ class Position
       this.y = y;
    }
 }
+
+class Circle
+{
+}
