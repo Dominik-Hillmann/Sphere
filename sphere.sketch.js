@@ -18,8 +18,7 @@ function setup()
    var canvas = createCanvas(WIDTH, HEIGHT);
    canvas.parent("sketch-holder");
 
-   // einfach jeden Punkt mit Abstand reinmachen
-
+   // frist collect all points possible, and for each of them the distance to the middle point
    for(var x = 1; x <= WIDTH; x++)
    {
       for(var y = 1; y <= HEIGHT; y++)
@@ -29,10 +28,10 @@ function setup()
       }
    }
 
-   console.log("Distance before filter: ", circlePositions);
+   // filter for all points circlePositions, that do need
    circlePositions = circlePositions.filter(function(element, i, array)
    {
-      return (circleDists[i] === SPHERE_RADIUS); // return true if at same spot in circleDists wanted radius
+      return circleDists[i] === SPHERE_RADIUS; // return true if at same spot in circleDists wanted radius
    });
    console.log("Array after filter for SPHERE_RADIUS: ", circlePositions);
 
@@ -49,39 +48,46 @@ function setup()
       return element.x > WIDTH / 2;
    });
    // none of the filters uses <= or >= because those points directly on edge won't be needed anyways
-   console.log(leftPositions);
-   console.log(rightPositions);
 
-   // now put the outermost points on the left and right on each y together to have lines or layers
 
-   var newLeftPositions = [];
    if(leftPositions.length != rightPositions.length)
       console.error("unequal length of arrays to build layers");
    else
    {
-      var mostLeft;
-      for(var i = 0; i < leftPositions.length; i++)
+      var sortedByYPos;
+      // neue Strategie: alle wieder durchgehen: da für jede Zeile die Px von links nach rechts durchgangen werden
+      // die ganz links in einem Filter auf Zeile zuerst im Array erscheinen
+      // also Filter auf jede Zeile anwenden
+      // dann das mit dem hächsten x-Wert in rightPositions, das mit dem kleinsten in leftPositions
+
+      // first, save all point that have the same height (y-position)
+      for(var i = 1; i <= HEIGHT; i++)
       {
-         var currentY = leftPositions[i].y;
-         var currentX = leftPositions[i].x;
-         mostLeft = leftPositions[i];
-
-         for(var j = 0; j < leftPositions; j++)
+         sortedByYPos = circlePositions.filter(function(element, index, array)
          {
-            if((leftPositions[j].y === currentY) && (leftPositions[j].x < currentX))
-               mostLeft = leftPositions[j]; // PROBLEM HIER KEINE ALTERIERUNG
-         }
+            return element.y === i;
+         });
 
-         if(mostLeft != null)
-            newLeftPositions.push(mostLeft);
+         // if there are no circle points with the y-position of i, go to the next iteration
+         if(sortedByYPos.length === 0)
+            continue;
 
-         // nun haben wir ein Element mit einem y Wert: alle weiteren Elemente absuchen, die gleiches y haben
-         // aber weiter links: immer, wenn eins linker, dann in Var rein
+         // zu layers gleich die linksten und rechtesten mit Konstruktor pushen?
+         layers.push(new Layer
+         (
+            sortedByYPos[0].x,
+            sortedByYPos[0].y,
+            sortedByYPos[sortedByYPos.length - 1].x,
+            sortedByYPos[sortedByYPos.length - 1].y
+         ));
       }
    }
+   console.log("Layers: ", layers);
 
-   console.log("Alt", leftPositions);
-   console.log("Neu", newLeftPositions);
+   console.log(circlePositions.filter(function(element, i, array)
+   {
+      return element.y === 1;
+   }).length);
 }
 
 
@@ -98,7 +104,7 @@ function draw()
    //console.log(circlePositions[0]);
    //ellipse(circlePositions[0].x, circlePositions[0].y, 50);
    //console.log(cirlcePositions[cirlcePositions.length - 1]);
-   for(var i = 0; i < circlePositions.length; i++)
+   /*for(var i = 0; i < circlePositions.length; i++)
       ellipse(circlePositions[i].x, circlePositions[i].y, 1);
 
    fill(0, 255, 0);
@@ -109,7 +115,15 @@ function draw()
    fill(0, 0, 255);
    stroke(0, 0, 255);
    for(var i = 0; i < rightPositions.length; i++)
-      ellipse(rightPositions[i].x, rightPositions[i].y, 1);
+      ellipse(rightPositions[i].x, rightPositions[i].y, 1);*/
+
+   for(var i = 0; i < layers.length; i++)
+      layers[i].draw();/*line
+      (
+         layers[i].left.x,
+         layers[i].left.y,
+         layers[i].right.x,
+         layers);*/
 
    // finding a way to put dots into a circle
 

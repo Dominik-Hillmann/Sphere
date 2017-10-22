@@ -27,6 +27,6 @@ class Layer
 
    draw()
    {
-      line(left.x, left.y, right.x, right.y);
+      line(this.left.x, this.left.y, this.right.x, this.right.y);
    }
 }
