@@ -25,8 +25,20 @@ class Layer
       this.right = new Position(x2, y2);
    }
 
-   draw()
+   draw() // draws a line between the ledt point of the layer and the right point
    {
       line(this.left.x, this.left.y, this.right.x, this.right.y);
+   }
+
+   // new point that will move along this layer's height between left.x and right.x
+   // later, there need to be
+   newPointsOnLayer()
+   {
+      // first decide, how many points there will be on this layer
+   }
+
+   drawPoints()
+   {
+
    }
 }

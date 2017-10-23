@@ -2,16 +2,8 @@ const SPHERE_RADIUS = 250;
 const WIDTH = 1000;
 const HEIGHT = 1000;
 
-var circlePositions = [];
-var circleDists = [];
-var filteredPositions = [];
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
-
-var leftPositions = [];
-var rightPositions = [];
-
 var layers = [];
-
 
 function setup()
 {
@@ -19,6 +11,8 @@ function setup()
    canvas.parent("sketch-holder");
 
    // frist collect all points possible, and for each of them the distance to the middle point
+   var circlePositions = []; // needed to capture all possible points on canvas that may belong to circle
+   var circleDists = []; // needed to save the distance between possible points and the desired middle point of the sphere
    for(var x = 1; x <= WIDTH; x++)
    {
       for(var y = 1; y <= HEIGHT; y++)
@@ -28,51 +22,45 @@ function setup()
       }
    }
 
-   // filter for all points circlePositions, that do need
+   // filter for all points circlePositions, that have a distance (saved in circleDists) of SPHERE_RADIUS to middle point
    circlePositions = circlePositions.filter(function(element, i, array)
    {
-      return circleDists[i] === SPHERE_RADIUS; // return true if at same spot in circleDists wanted radius
+      return circleDists[i] === SPHERE_RADIUS;
    });
-   console.log("Array after filter for SPHERE_RADIUS: ", circlePositions);
-
-   // ab hier hat man eine Liste aller Punkte, die den Kreis ergeben
-   // um die Linien ziehen zu koennen, braucht man die Punkte, die auf der x-Achse am weitesten links und am weistesten rechts liegen
-   //
-   leftPositions = circlePositions.filter(function(element, i, array)
+   // console.log("Array after filter for SPHERE_RADIUS: ", circlePositions);
+   // filters for all points with SPHERE_RADIUS distance to middle point on the left side of the canvas
+   var leftPositions = circlePositions.filter(function(element, i, array)
    {
       return element.x < WIDTH / 2;
    });
-
-   rightPositions = circlePositions.filter(function(element, i, array)
+   // filters for all points with SPHERE_RADIUS distance to middle point on the right side of the canvas
+   var rightPositions = circlePositions.filter(function(element, i, array)
    {
       return element.x > WIDTH / 2;
    });
-   // none of the filters uses <= or >= because those points directly on edge won't be needed anyways
+   // none of the filters uses <= or >= because those points directly on the edge won't be needed anyways
 
-
+   // for the last filter, both arrays need to have the same number of points in them
    if(leftPositions.length != rightPositions.length)
       console.error("unequal length of arrays to build layers");
    else
    {
-      var sortedByYPos;
-      // neue Strategie: alle wieder durchgehen: da für jede Zeile die Px von links nach rechts durchgangen werden
-      // die ganz links in einem Filter auf Zeile zuerst im Array erscheinen
-      // also Filter auf jede Zeile anwenden
-      // dann das mit dem hächsten x-Wert in rightPositions, das mit dem kleinsten in leftPositions
 
-      // first, save all point that have the same height (y-position)
-      for(var i = 1; i <= HEIGHT; i++)
+      var sortedByYPos;
+      for(var i = 1; i <= HEIGHT; i++) // first, get all points that have the same height (.y)
       {
          sortedByYPos = circlePositions.filter(function(element, index, array)
          {
             return element.y === i;
          });
 
-         // if there are no circle points with the y-position of i, go to the next iteration
-         if(sortedByYPos.length === 0)
+         if(sortedByYPos.length === 0) // if there are no circle points with the y-position of i, go to the next iteration
             continue;
 
-         // zu layers gleich die linksten und rechtesten mit Konstruktor pushen?
+         // the points were sorted into the original array so that
+            // the points most on the left (or the smallest .x) were sorted in first
+            // the points on the top of the canvas (smalles .y) were sorted in first
+         // --> therefore, the left border of one height is the first element and right border is the last element
          layers.push(new Layer
          (
             sortedByYPos[0].x,
@@ -83,56 +71,29 @@ function setup()
       }
    }
    console.log("Layers: ", layers);
-
-   console.log(circlePositions.filter(function(element, i, array)
-   {
-      return element.y === 1;
-   }).length);
 }
 
 
 
 function draw()
 {
-   // background(255, 255, 255);
    background(0, 0, 0);
-   //ellipse(middlePoint.x, middlePoint.y, SPHERE_RADIUS);
 
-   stroke(255, 0, 0);
-   fill(255, 0, 0);
-
-   //console.log(circlePositions[0]);
-   //ellipse(circlePositions[0].x, circlePositions[0].y, 50);
-   //console.log(cirlcePositions[cirlcePositions.length - 1]);
-   /*for(var i = 0; i < circlePositions.length; i++)
-      ellipse(circlePositions[i].x, circlePositions[i].y, 1);
-
-   fill(0, 255, 0);
+   /*fill(0, 255, 0);
    stroke(0, 255, 0);
    for(var i = 0; i < leftPositions.length; i++)
-      ellipse(leftPositions[i].x, leftPositions[i].y, 1);
+      ellipse(leftPositions[i].x, leftPositions[i].y, 3);
 
    fill(0, 0, 255);
    stroke(0, 0, 255);
    for(var i = 0; i < rightPositions.length; i++)
-      ellipse(rightPositions[i].x, rightPositions[i].y, 1);*/
+      ellipse(rightPositions[i].x, rightPositions[i].y, 3);*/
 
+   stroke(255, 0, 0);
+   fill(255, 0, 0);
    for(var i = 0; i < layers.length; i++)
-      layers[i].draw();/*line
-      (
-         layers[i].left.x,
-         layers[i].left.y,
-         layers[i].right.x,
-         layers);*/
-
-   // finding a way to put dots into a circle
-
+      layers[i].draw();
 }
 /* TODO:
 -
-
-
-
-
-
 */
