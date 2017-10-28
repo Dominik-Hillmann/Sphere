@@ -69,6 +69,8 @@ function setup()
             sortedByYPos[sortedByYPos.length - 1].y
          ));
       }
+      for(var i = 0; i < layers.length; i++)
+         layers[i].newPointsOnLayer(3);
    }
    console.log("Layers: ", layers);
 }
@@ -92,7 +94,10 @@ function draw()
    stroke(255, 0, 0);
    fill(255, 0, 0);
    for(var i = 0; i < layers.length; i++)
-      layers[i].draw();
+   {
+      //layers[i].draw();
+      layers[i].drawPoints(3);
+   }
 }
 /* TODO:
 -
