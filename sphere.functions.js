@@ -60,6 +60,8 @@ class Layer
       // console.log("Areas: ", area1Left, area2Left, area3, area2Right, area1Right);
       // console.log("von ", this.left.x, " bis ", this.right.x);
 
+      // DAMIT NICHT ZU HARTE KANTEN BEREICHE UEBERLAPPEN LASSEN
+
       // here is where the areas are assigned probabilities of points falling into them
       // we want 50 percent for area1, 30 for area2, 20 for area3
       var odds = Math.random();
@@ -69,12 +71,15 @@ class Layer
       else if((odds > 0.5) && (odds < 0.8)) // other 30 percent, area2 will be selected
          selectedAreas = [area2Left, area2Right];
       else // the other 20 percent, so 0.8 to 1.0 will get area3 selected
+      {
          selectedAreas = area3;
+         console.log("Test\n");
+      }
       // console.log("selectedAreas ", odds, selectedAreas, "len:", selectedAreas.length);
       // both parts of an area need to be selected because both together have the overall probability assigned
 
       // since areas 1 and 2 are divided into two and area 3 is kept together, they need to be treated differently
-      if(selectedAreas.length == 2) // so area 1 or 2
+      if(selectedAreas[0].length == 2) // so area 1 or 2
       {
          var iterationArea; // to select left or right half based on random number
          for(var i = 1; i <= howMany; i++)
@@ -94,6 +99,7 @@ class Layer
       }
       else // so area 3 is selected --> no need to decide between
       {
+         console.log("Test1");
          for(var i = 1; i <= howMany; i++)
          {
             this.points.push(new Position
@@ -101,6 +107,7 @@ class Layer
                map(Math.random(), 0, 1, selectedAreas[0], selectedAreas[1]),
                this.left.y
             ));
+
          }
       }
       // console.log(this.points);
@@ -109,6 +116,7 @@ class Layer
    // draws the array of points in this layer
    drawPoints(size)
    {
+      stroke(255, 255 ,255);
       fill(255, 255, 255);
       for(var i = 0; i < this.points.length; i++)
          ellipse(this.points[i].x, this.points[i].y, size);

@@ -1,6 +1,6 @@
 const SPHERE_RADIUS = 250;
-const WIDTH = 1000;
-const HEIGHT = 1000;
+const WIDTH = window.innerWidth;
+const HEIGHT = window.innerHeight;
 
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 var layers = [];
@@ -56,7 +56,6 @@ function setup()
 
          if(sortedByYPos.length === 0) // if there are no circle points with the y-position of i, go to the next iteration
             continue;
-
          // the points were sorted into the original array so that
             // the points most on the left (or the smallest .x) were sorted in first
             // the points on the top of the canvas (smalles .y) were sorted in first
@@ -96,6 +95,8 @@ function draw()
    for(var i = 0; i < layers.length; i++)
    {
       //layers[i].draw();
+      stroke(255, 255 ,255);
+      fill(255, 255, 255);
       layers[i].drawPoints(3);
    }
 }
