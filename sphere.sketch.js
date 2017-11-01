@@ -1,14 +1,16 @@
-const SPHERE_RADIUS = 250;
+const SPHERE_RADIUS = 300;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 var layers = [];
+var cursor;
 
 function setup()
 {
    var canvas = createCanvas(WIDTH, HEIGHT);
    canvas.parent("sketch-holder");
+   cursor = new Cursor(mouseX, mouseY)
 
    // frist collect all points possible, and for each of them the distance to the middle point
    var circlePositions = []; // needed to capture all possible points on canvas that may belong to circle
@@ -45,7 +47,6 @@ function setup()
       console.error("unequal length of arrays to build layers");
    else
    {
-
       var sortedByYPos;
       for(var i = 1; i <= HEIGHT; i++) // first, get all points that have the same height (.y)
       {
@@ -68,38 +69,29 @@ function setup()
             sortedByYPos[sortedByYPos.length - 1].y
          ));
       }
+
       for(var i = 0; i < layers.length; i++)
          layers[i].newPointsOnLayer(3);
    }
-   console.log("Layers: ", layers);
 }
-
 
 
 function draw()
 {
    background(0, 0, 0);
+   cursor.update();
 
-   /*fill(0, 255, 0);
-   stroke(0, 255, 0);
-   for(var i = 0; i < leftPositions.length; i++)
-      ellipse(leftPositions[i].x, leftPositions[i].y, 3);
-
-   fill(0, 0, 255);
-   stroke(0, 0, 255);
-   for(var i = 0; i < rightPositions.length; i++)
-      ellipse(rightPositions[i].x, rightPositions[i].y, 3);*/
-
-   stroke(255, 0, 0);
-   fill(255, 0, 0);
    for(var i = 0; i < layers.length; i++)
    {
       //layers[i].draw();
       stroke(255, 255 ,255);
       fill(255, 255, 255);
-      layers[i].drawPoints(3);
+      layers[i].movePoints(cursor);
+      layers[i].drawPoints(3, 2);
    }
 }
 /* TODO:
--
+- two layers behind each other
+   - constructor with additonal info about the tier
+   - drawing them differently
 */
