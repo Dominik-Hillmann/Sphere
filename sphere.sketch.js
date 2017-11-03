@@ -88,6 +88,7 @@ function draw()
       fill(255, 255, 255);
       layers[i].movePoints(cursor);
       layers[i].drawPoints(3, 2);
+      //layers[i].drawLine();
    }
 }
 /* TODO:

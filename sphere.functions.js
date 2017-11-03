@@ -89,6 +89,7 @@ class Layer
 
       this.left = new Position(x1, y1);
       this.right = new Position(x2, y2);
+      this.layerLen = x2 - x1;
       this.points = [];
    }
 
@@ -159,7 +160,14 @@ class Layer
    movePoints(cursor)
    {
       for(var j = 0; j < this.points.length; j++)
-         this.points[j].x += this.points[j].x * cursor.relChangeX;      
+      {
+         //console.log(this.layerLen);
+         this.points[j].x += this.layerLen * cursor.relChangeX;
+      }
+         //this.points[j].x += this.points[j].x * cursor.relChangeX;
+         // Punkt bewegt sich um Anteil innerhalb der Layer zwischen den Grenzen
+         // also
+
    }
 
    // draws the array of points in this layer
