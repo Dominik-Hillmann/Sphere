@@ -1,7 +1,8 @@
 const SPHERE_RADIUS = 300;
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-
+const CURSOR_MOVE = true; // determines whether the rotation of the sphere follows the cursor or rotates with time
+// LATER TO BE CONTROLLED BY USER
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 var layers = [];
 var cursor;
@@ -10,7 +11,7 @@ function setup()
 {
    var canvas = createCanvas(WIDTH, HEIGHT);
    canvas.parent("sketch-holder");
-   cursor = new Cursor(mouseX, mouseY)
+   cursor = new Cursor(winMouseX, winMouseY);
 
    // frist collect all points possible, and for each of them the distance to the middle point
    var circlePositions = []; // needed to capture all possible points on canvas that may belong to circle
@@ -57,10 +58,10 @@ function setup()
 
          if(sortedByYPos.length === 0) // if there are no circle points with the y-position of i, go to the next iteration
             continue;
-         // the points were sorted into the original array so that
-            // the points most on the left (or the smallest .x) were sorted in first
-            // the points on the top of the canvas (smalles .y) were sorted in first
-         // --> therefore, the left border of one height is the first element and right border is the last element
+         /* the points were sorted into the original array so that
+            the points most on the left (or the smallest .x) were sorted in first
+            the points on the top of the canvas (smalles .y) were sorted in first
+            --> therefore, the left border of one height is the first element and right border is the last element */
          layers.push(new Layer
          (
             sortedByYPos[0].x,
@@ -68,12 +69,12 @@ function setup()
             sortedByYPos[sortedByYPos.length - 1].x,
             sortedByYPos[sortedByYPos.length - 1].y
          ));
-      }
+      } // for
 
       for(var i = 0; i < layers.length; i++)
          layers[i].newPointsOnLayer(3);
-   }
-}
+   } // else
+} // setup
 
 
 function draw()
@@ -92,7 +93,11 @@ function draw()
    }
 }
 /* TODO:
-- two layers behind each other
-   - constructor with additonal info about the tier
-   - drawing them differently
+- change of direction, wenn Punkt > rechte Grenze der Layer XXX
+- dann hat die Differenzaddierung den umgekehrten Effekt: Punkte laufen in die andere Richtung XXX
+- remove bug at the edges of the circle
+- colors
+   - Schleiereffekt
+- lines popping up
+
 */

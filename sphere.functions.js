@@ -29,7 +29,9 @@ class Cursor
          y : y
       };
 
-      this.relChangeX = 0.0; // enough directly after
+                                                         // only 0.1% of the speed because too fast otherwise
+      this.relX = ((this.current.x - WIDTH / 2) / WIDTH) * 0.001;
+      // this.relX =  map(this.current.x, 0, WIDTH, -1, 1);
    }
 
    // last position is current position and current position is mouseX and mouseY
@@ -40,20 +42,20 @@ class Cursor
       this.current.x = winMouseX;
       this.current.y = winMouseY;
 
-      this.relChangeX = (this.current.x - this.last.x) / WIDTH; // saves the current relative change to the canvas WIDTH in x
+      this.relX = ((this.current.x - WIDTH / 2) / WIDTH) * 0.05;
+      //console.log(this.relX);
+      /*if(cursor.current.x <= WIDTH / 2)
+         this.relX = map(cursor.current.x, 0, middlePoint.x, -1, 0);
+      else
+         this.relX = map(cursor.current.x, 0, middlePoint.x, 0, 1);*/
+      //this.relX = map(this.current.x, 0, WIDTH, -1, 1);
+
+      // relX shows the cursor's position in realation the the x value of the middlePoint
+      // it can have the values of [-1, 1], meaning
+      // that if the cursor is at the most left position, it will have the value -1
+      // and 1 of it is at the right edge of the canvas
+      // the points on each layer will follow it: -1 == at left edge of layer; 1 == at right edge
    }
-
-   /*calcRelChangeX()
-   {
-      // only for x
-      // it shows, how far the cursor has travelled relative to the size of the canvas
-      // this change will be translated into the relative distance the points will travel on their layers
-      // if they are in the first tier, they will travel in the same direction as the cursor
-      // if they are in the 2nd tier, they will travel in the opposite direction of the one the cursor is taking
-
-      // if it goes left, i want it to be negatve
-      // so last value has to be bigger than current
-   }*/
 }
 
 
@@ -102,11 +104,11 @@ class Layer
       // top to bottom: each layer is divided into unequal parts:
       // the first 0 to 10 percent, 10 to 25 percent, 25 to 75 percent, 75 to 90, 90 to 100 percent
       // the smaller areas on the side are supposed to have a bigger probability of points falling into them
-      var area1Left = [this.left.x, partialDist(this.left.x, layerLen, 0.1)]; // first left
-      var area2Left = [partialDist(this.left.x, layerLen, 0.1), partialDist(this.left.x, layerLen, 0.25)]; // second left
-      var area3 = [partialDist(this.left.x, layerLen, 0.25), partialDist(this.left.x, layerLen, 0.75)]; // middle
-      var area2Right = [partialDist(this.left.x, layerLen, 0.75), partialDist(this.left.x, layerLen, 0.9)]; // second right
-      var area1Right = [partialDist(this.left.x, layerLen, 0.9), this.right.x]; // frist right
+      var area1Left = [this.left.x + 1, partialDist(this.left.x, layerLen, 0.1) - 1]; // first left
+      var area2Left = [partialDist(this.left.x, layerLen, 0.1) + 1, partialDist(this.left.x, layerLen, 0.25) - 1]; // second left
+      var area3 = [partialDist(this.left.x, layerLen, 0.25) + 1, partialDist(this.left.x, layerLen, 0.75) - 1]; // middle
+      var area2Right = [partialDist(this.left.x, layerLen, 0.75) + 1, partialDist(this.left.x, layerLen, 0.9) - 1]; // second right
+      var area1Right = [partialDist(this.left.x, layerLen, 0.9) + 1, this.right.x - 1]; // frist right
       // console.log("Areas: ", area1Left, area2Left, area3, area2Right, area1Right);
       // console.log("von ", this.left.x, " bis ", this.right.x);
 
@@ -154,33 +156,52 @@ class Layer
                this.left.y
             ));
          }
-      }
-   }
+      } // else
+   } // newPointsOnLayer
 
    movePoints(cursor)
    {
-      for(var j = 0; j < this.points.length; j++)
+      if(CURSOR_MOVE) // rotation follows the cursor
       {
-         //console.log(this.layerLen);
-         this.points[j].x += this.layerLen * cursor.relChangeX;
-      }
-         //this.points[j].x += this.points[j].x * cursor.relChangeX;
-         // Punkt bewegt sich um Anteil innerhalb der Layer zwischen den Grenzen
-         // also
+         for(var i = 0; i < this.points.length; i++)
+         {
+            var point = this.points[i];
+            if(point.secondTier)
+               point.x += this.layerLen * (-1 * cursor.relX);
+            else
+               point.x += this.layerLen * cursor.relX;
+            // at last, the change of direction, if the point happens to step over the layer's border
+            if((point.x > this.right.x) || (point.x < this.left.x))
+                  point.secondTier = !point.secondTier;
+         }
 
+            /*map
+            (
+               cursor.current.x,
+
+            );*/
+            //map(cursor.relX, 0, 1, this.left.x, this.right.x);
+      }
+      else // sphere rotates with time/frames
+      {
+      }
+      //console.log(this.points);
+
+
+
+       // spater in die obere loop integrieren
    }
 
    // draws the array of points in this layer
    drawPoints(size1stTier, size2ndTier)
    {
-      stroke(255, 255 ,255);
-      fill(255, 255, 255);
       for(var i = 0; i < this.points.length; i++)
       {
-         if(this.points[i].secondTier)
-            ellipse(this.points[i].x, this.points[i].y, size2ndTier);
+         var point = this.points[i];
+         if(point.secondTier)
+            ellipse(point.x, point.y, size2ndTier);
          else
-            ellipse(this.points[i].x, this.points[i].y, size1stTier);
+            ellipse(point.x, point.y, size1stTier);
       }
    }
 
