@@ -72,7 +72,12 @@ function setup()
       } // for
 
       for(var i = 0; i < layers.length; i++)
+      {
          layers[i].newPointsOnLayer(3);
+         layers[i].colorize(/*XXX HIER STARTPUNKT FINDEN*/);
+      }
+
+
    } // else
 } // setup
 
@@ -98,6 +103,7 @@ function draw()
 - remove bug at the edges of the circle
 - colors
    - Schleiereffekt
+   - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen,
+     Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf
 - lines popping up
-
 */

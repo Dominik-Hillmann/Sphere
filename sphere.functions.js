@@ -73,10 +73,17 @@ class Position
 // contains additonal information about the tier of the point
 class CirclePos extends Position
 {
-   constructor(x, y)
+   constructor(x, y, r, g, b)
    {
       super(x, y);
       this.secondTier = (Math.random() > 0.5); // 50% possibility that the dot will be in the second tier
+      // this.color = [255, 255, 255];
+      this.color =
+      {
+         r : r,
+         g : g,
+         b : b
+      };
    }
 }
 
@@ -104,11 +111,31 @@ class Layer
       // top to bottom: each layer is divided into unequal parts:
       // the first 0 to 10 percent, 10 to 25 percent, 25 to 75 percent, 75 to 90, 90 to 100 percent
       // the smaller areas on the side are supposed to have a bigger probability of points falling into them
-      var area1Left = [this.left.x + 1, partialDist(this.left.x, layerLen, 0.1) - 1]; // first left
-      var area2Left = [partialDist(this.left.x, layerLen, 0.1) + 1, partialDist(this.left.x, layerLen, 0.25) - 1]; // second left
-      var area3 = [partialDist(this.left.x, layerLen, 0.25) + 1, partialDist(this.left.x, layerLen, 0.75) - 1]; // middle
-      var area2Right = [partialDist(this.left.x, layerLen, 0.75) + 1, partialDist(this.left.x, layerLen, 0.9) - 1]; // second right
-      var area1Right = [partialDist(this.left.x, layerLen, 0.9) + 1, this.right.x - 1]; // frist right
+      var area1Left =
+      [
+         this.left.x + 1,
+         partialDist(this.left.x, layerLen, 0.1) - 1
+      ]; // first left
+      var area2Left =
+      [
+         partialDist(this.left.x, layerLen, 0.1) + 1,
+         partialDist(this.left.x, layerLen, 0.25) - 1
+      ]; // second left
+      var area3 =
+      [
+         partialDist(this.left.x, layerLen, 0.25) + 1,
+         partialDist(this.left.x, layerLen, 0.75) - 1
+      ]; // middle
+      var area2Right =
+      [
+         partialDist(this.left.x, layerLen, 0.75) + 1,
+         partialDist(this.left.x, layerLen, 0.9) - 1
+      ]; // second right
+      var area1Right =
+      [
+         partialDist(this.left.x, layerLen, 0.9) + 1,
+         this.right.x - 1
+      ]; // frist right
       // console.log("Areas: ", area1Left, area2Left, area3, area2Right, area1Right);
       // console.log("von ", this.left.x, " bis ", this.right.x);
 
@@ -142,7 +169,8 @@ class Layer
             this.points.push(new CirclePos
             (
                map(Math.random(), 0, 1, iterationArea[0], iterationArea[1]),
-               this.left.y
+               this.left.y,
+
             )); // then finally push new point in array that contains this layer's points
          }
       }
@@ -174,13 +202,6 @@ class Layer
             if((point.x > this.right.x) || (point.x < this.left.x))
                   point.secondTier = !point.secondTier;
          }
-
-            /*map
-            (
-               cursor.current.x,
-
-            );*/
-            //map(cursor.relX, 0, 1, this.left.x, this.right.x);
       }
       else // sphere rotates with time/frames
       {
@@ -192,12 +213,38 @@ class Layer
        // spater in die obere loop integrieren
    }
 
+
+   colorize(startPoint)
+   {
+      // point where colorgradient starts
+      var startPoint = new Position(layers)
+      for(var i = 0; i < this.points.length; i++)
+      {
+         // setting colors
+         // starting 0.75 bottom right r161 g44 b52
+         // ending r217 g84 b39
+
+         // also, der maximale Abstand sollte SPHERE_RADIUS sein
+            // das heißt, amn kann alle Differenzen in r, g, b auf 0..SPHERE_RADIUS mappen
+
+
+         var point = this.points[i];
+         var dist = distance(point.x, point.x, startPoint);
+         point.colors.r = map(dist, 0, SPHERE_RADIUS, 161, 217);
+         point.colors.g = map(dist, 0, SPHERE_RADIUS, 44, 84);
+         point.colors.b = map(dist, 0, SPHERE_RADIUS, 52, 39);
+      }
+   }
+
    // draws the array of points in this layer
    drawPoints(size1stTier, size2ndTier)
    {
       for(var i = 0; i < this.points.length; i++)
       {
          var point = this.points[i];
+         stroke(point.r, point.g, point.b);
+         fill(point.r, point.g, point.b);
+
          if(point.secondTier)
             ellipse(point.x, point.y, size2ndTier);
          else
@@ -205,9 +252,17 @@ class Layer
       }
    }
 
-   // draws a line between the ledt point of the layer and the right point
+   // draws a line between the left point of the layer and the right point
    drawLine()
    {
       line(this.left.x, this.left.y, this.right.x, this.right.y);
    }
 }
+
+/*class Circle
+{
+   constructor()
+   {
+      this.layers = layers;
+   }
+}*/
