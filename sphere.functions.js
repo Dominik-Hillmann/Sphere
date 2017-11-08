@@ -170,7 +170,9 @@ class Layer
             (
                map(Math.random(), 0, 1, iterationArea[0], iterationArea[1]),
                this.left.y,
-
+               255,
+               255,
+               255
             )); // then finally push new point in array that contains this layer's points
          }
       }
@@ -217,7 +219,6 @@ class Layer
    colorize(startPoint)
    {
       // point where colorgradient starts
-      var startPoint = new Position(layers)
       for(var i = 0; i < this.points.length; i++)
       {
          // setting colors
@@ -230,9 +231,11 @@ class Layer
 
          var point = this.points[i];
          var dist = distance(point.x, point.x, startPoint);
-         point.colors.r = map(dist, 0, SPHERE_RADIUS, 161, 217);
-         point.colors.g = map(dist, 0, SPHERE_RADIUS, 44, 84);
-         point.colors.b = map(dist, 0, SPHERE_RADIUS, 52, 39);
+         console.log("distance: ", dist);
+         /*point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 161, 217));
+         point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 44, 84));
+         point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 52, 39));
+         console.log("color", point.color);*/
       }
    }
 
@@ -242,8 +245,12 @@ class Layer
       for(var i = 0; i < this.points.length; i++)
       {
          var point = this.points[i];
-         stroke(point.r, point.g, point.b);
-         fill(point.r, point.g, point.b);
+         var r = point.color.r;
+         var g = point.color.g;
+         var b = point.color.b;
+         stroke(r, g, b);
+         fill(r, g, b);
+         console.log(r, g, b);
 
          if(point.secondTier)
             ellipse(point.x, point.y, size2ndTier);

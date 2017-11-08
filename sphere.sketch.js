@@ -74,8 +74,15 @@ function setup()
       for(var i = 0; i < layers.length; i++)
       {
          layers[i].newPointsOnLayer(3);
-         layers[i].colorize(/*XXX HIER STARTPUNKT FINDEN*/);
+         layers[i].colorize(new Position
+         (
+            WIDTH / 2 + SPHERE_RADIUS,
+            HEIGHT / 2 + SPHERE_RADIUS
+         ));
       }
+      for(var i = 0; i < layers.length; i++)
+         for(var j = 0; j < layers[i].points.length; j++)
+            console.log(layers[i].points[j].colors);
 
 
    } // else
@@ -86,12 +93,12 @@ function draw()
 {
    background(0, 0, 0);
    cursor.update();
+   //fill(255, 255, 255);
+   //stroke(255, 255, 255);
 
    for(var i = 0; i < layers.length; i++)
    {
-      //layers[i].draw();
-      stroke(255, 255 ,255);
-      fill(255, 255, 255);
+      //layers[i].drawLine();
       layers[i].movePoints(cursor);
       layers[i].drawPoints(3, 2);
       //layers[i].drawLine();
