@@ -231,11 +231,12 @@ class Layer
 
          var point = this.points[i];
          var dist = distance(point.x, point.x, startPoint);
-         console.log("distance: ", dist);
-         /*point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 161, 217));
+         //console.log("distance: ", dist);
+         point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 161, 217));
          point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 44, 84));
          point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 52, 39));
-         console.log("color", point.color);*/
+         //console.log("color", point.color);
+         //
       }
    }
 
@@ -248,9 +249,9 @@ class Layer
          var r = point.color.r;
          var g = point.color.g;
          var b = point.color.b;
+
          stroke(r, g, b);
          fill(r, g, b);
-         console.log(r, g, b);
 
          if(point.secondTier)
             ellipse(point.x, point.y, size2ndTier);
@@ -268,7 +269,7 @@ class Layer
 
 /*class Circle
 {
-   constructor()
+   constructor(layers)
    {
       this.layers = layers;
    }

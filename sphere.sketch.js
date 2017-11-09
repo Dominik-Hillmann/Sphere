@@ -111,6 +111,7 @@ function draw()
 - colors
    - Schleiereffekt
    - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen,
-     Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf
+     Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf XXX
+   - weiterhin Startpunkt für Farben Startpunkt bei 0.75 unten rechts
 - lines popping up
 */
