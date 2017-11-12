@@ -28,10 +28,8 @@ class Cursor
          x : x,
          y : y
       };
-
                                                          // only 0.1% of the speed because too fast otherwise
       this.relX = ((this.current.x - WIDTH / 2) / WIDTH) * 0.001;
-      // this.relX =  map(this.current.x, 0, WIDTH, -1, 1);
    }
 
    // last position is current position and current position is mouseX and mouseY
@@ -77,7 +75,6 @@ class CirclePos extends Position
    {
       super(x, y);
       this.secondTier = (Math.random() > 0.5); // 50% possibility that the dot will be in the second tier
-      // this.color = [255, 255, 255];
       this.color =
       {
          r : r,
@@ -174,7 +171,7 @@ class Layer
                255,
                255
             )); // then finally push new point in array that contains this layer's points
-         }
+         } // for
       }
       else // so area 3 is selected --> no need to decide between
       {
@@ -202,41 +199,28 @@ class Layer
                point.x += this.layerLen * cursor.relX;
             // at last, the change of direction, if the point happens to step over the layer's border
             if((point.x > this.right.x) || (point.x < this.left.x))
-                  point.secondTier = !point.secondTier;
+               point.secondTier = !point.secondTier;
          }
       }
-      else // sphere rotates with time/frames
+      else  // sphere rotates with time/frames
       {
       }
-      //console.log(this.points);
-
-
-
-       // spater in die obere loop integrieren
    }
 
-
+   // sets
    colorize(startPoint)
    {
-      // point where colorgradient starts
+      // startPoint: point where color gradient starts
       for(var i = 0; i < this.points.length; i++)
       {
          // setting colors
          // starting 0.75 bottom right r161 g44 b52
          // ending r217 g84 b39
-
-         // also, der maximale Abstand sollte SPHERE_RADIUS sein
-            // das heißt, amn kann alle Differenzen in r, g, b auf 0..SPHERE_RADIUS mappen
-
-
          var point = this.points[i];
          var dist = distance(point.x, point.x, startPoint);
-         //console.log("distance: ", dist);
          point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 161, 217));
          point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 44, 84));
          point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 52, 39));
-         //console.log("color", point.color);
-         //
       }
    }
 

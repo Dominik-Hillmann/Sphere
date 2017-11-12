@@ -71,20 +71,34 @@ function setup()
          ));
       } // for
 
+      // colorizing the dots with a color gradient
+      // now the starting point for the color gradient has to be set up
+      var distsToCorner = [];
+      for(var i = 0; i < layers.length; i++)
+         distsToCorner.push(distance(WIDTH, HEIGHT, layers[i].right));
+         // which point on the circle has the smallest distance to the corner down right?
+      // reducing for the point with the smalles distance
+      var startPoint = distsToCorner.reduce(function(total, currentValue, currentIndex, arr)
+      {
+         if(distance(WIDTH, HEIGHT, currentValue) < distance(WIDTH, HEIGHT, total))
+            total = currentValue;
+      }, distance(0, 0, new Position(WIDTH, HEIGHT)));
+
+      // colorizing with startPoint from before as starting position for color gradient
       for(var i = 0; i < layers.length; i++)
       {
          layers[i].newPointsOnLayer(3);
-         layers[i].colorize(new Position
+         layers[i].colorize(startPoint/*new Position
          (
             WIDTH / 2 + SPHERE_RADIUS,
             HEIGHT / 2 + SPHERE_RADIUS
-         ));
-      }
+         )*/);
+      } // for
+
+
       for(var i = 0; i < layers.length; i++)
          for(var j = 0; j < layers[i].points.length; j++)
             console.log(layers[i].points[j].colors);
-
-
    } // else
 } // setup
 
@@ -113,5 +127,6 @@ function draw()
    - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen,
      Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf XXX
    - weiterhin Startpunkt für Farben Startpunkt bei 0.75 unten rechts
+   - implementieren, dass aus mehreren Farbkombis ausgewählt wird
 - lines popping up
 */
