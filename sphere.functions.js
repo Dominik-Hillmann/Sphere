@@ -110,28 +110,28 @@ class Layer
       // the smaller areas on the side are supposed to have a bigger probability of points falling into them
       var area1Left =
       [
-         this.left.x + 1,
-         partialDist(this.left.x, layerLen, 0.1) - 1
+         this.left.x,
+         partialDist(this.left.x, layerLen, 0.1)
       ]; // first left
       var area2Left =
       [
-         partialDist(this.left.x, layerLen, 0.1) + 1,
-         partialDist(this.left.x, layerLen, 0.25) - 1
+         partialDist(this.left.x, layerLen, 0.1),
+         partialDist(this.left.x, layerLen, 0.25)
       ]; // second left
       var area3 =
       [
-         partialDist(this.left.x, layerLen, 0.25) + 1,
-         partialDist(this.left.x, layerLen, 0.75) - 1
+         partialDist(this.left.x, layerLen, 0.25),
+         partialDist(this.left.x, layerLen, 0.75)
       ]; // middle
       var area2Right =
       [
-         partialDist(this.left.x, layerLen, 0.75) + 1,
-         partialDist(this.left.x, layerLen, 0.9) - 1
+         partialDist(this.left.x, layerLen, 0.75),
+         partialDist(this.left.x, layerLen, 0.9)
       ]; // second right
       var area1Right =
       [
-         partialDist(this.left.x, layerLen, 0.9) + 1,
-         this.right.x - 1
+         partialDist(this.left.x, layerLen, 0.9),
+         this.right.x
       ]; // frist right
       // console.log("Areas: ", area1Left, area2Left, area3, area2Right, area1Right);
       // console.log("von ", this.left.x, " bis ", this.right.x);
@@ -218,9 +218,9 @@ class Layer
          // ending r217 g84 b39
          var point = this.points[i];
          var dist = distance(point.x, point.x, startPoint);
-         point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 161, 217));
-         point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 44, 84));
-         point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 52, 39));
+         point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 14, 204));
+         point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 255, 255));
+         point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 255, 19));
       }
    }
 
@@ -233,14 +233,44 @@ class Layer
          var r = point.color.r;
          var g = point.color.g;
          var b = point.color.b;
+         var x = point.x;
+         var y = point.y;
+         var alpha = 255;
 
          stroke(r, g, b);
          fill(r, g, b);
 
+         // three drawings with three alphas
+
+
          if(point.secondTier)
-            ellipse(point.x, point.y, size2ndTier);
+         {
+            for(var j = 0; j < 3; j++)
+            {
+               stroke(r, g, b, alpha)
+               fill(r, g, b, alpha);
+               ellipse(x, y, size2ndTier);
+               x -= 2;
+               y -= 2;
+               alpha -= 90;
+            }
+         }
+
          else
             ellipse(point.x, point.y, size1stTier);
+
+         for(var j = 0; j < 3; j++)
+         {
+            stroke(r, g, b, alpha)
+            fill(r, g, b, alpha);
+            if(point.secondTier)
+               ellipse(x, y, size2ndTier);
+            else
+               ellipse(x, y, size1stTier);
+            x -= 2;
+            y -= 2;
+            alpha -= 90;
+         }
       }
    }
 
