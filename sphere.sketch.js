@@ -1,12 +1,16 @@
-const SPHERE_RADIUS = 300;
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
-const CURSOR_MOVE = true; // determines whether the rotation of the sphere follows the cursor or rotates with time
-// LATER TO BE CONTROLLED BY USER
+const SPHERE_RADIUS = 255;
+const WIDTH = window.innerHeight - 15;
+const HEIGHT = window.innerHeight - 15;
+const CURSOR_MOVE = false;
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 var layers = [];
+var colorGradient =
+[
+   new ColorGradient(243, 29, 52, 247, 159, 39),
+   new ColorGradient(14, 255, 255, 204, 255, 19),
+   new ColorGradient(10, 48, 255, 16, 216, 255)
+];
 var cursor;
-
 var startPoint;
 
 function setup()
@@ -74,62 +78,34 @@ function setup()
       } // for
 
       // colorizing the dots with a color gradient
+      var r = Math.random();
+      if(r < (1 / colorGradient.length))
+         colorGradient = colorGradient[0];
+      else if(r < (2 / colorGradient.length))
+         colorGradient = colorGradient[1];
+      else
+         colorGradient = colorGradient[2];
       // now the starting point for the color gradient has to be set up
       startPoint = layers[Math.round(0.75 * layers.length)].right;
       // colorizing with startPoint from before as starting position for color gradient
       for(var i = 0; i < layers.length; i++)
       {
-         layers[i].newPointsOnLayer(3);
-         layers[i].colorize(startPoint);
+         layers[i].newPointsOnLayer(2);
+         layers[i].colorize(startPoint, colorGradient);
       } // for
-
-
    } // else
 } // setup
 
-var outsideSphere = []
 function draw()
 {
    background(0, 0, 0);
+
    cursor.update();
-   //fill(255, 255, 255);
-   //stroke(255, 255, 255);
-
-   if(frameCount === 1)
-   {
-      for(var i = 0; i < layers.length; i++)
-      {
-         for(var j = 0; j < layers[i].points.length; j++)
-         {
-            var point = layers[i].points[j];
-            if(distance(point.x, point.y, middlePoint) > SPHERE_RADIUS)
-            {
-               var pointObj =
-               {
-                  point : point,
-                  layer : i,
-                  number : j
-               }
-               console.log(pointObj);
-               outsideSphere.push(pointObj);
-            }
-         }
-      }
-   }
-   //if(frames === 2)
-   {
-      //for(var obj = 0; obj < outsideSphere.length)
-   }
-
-
    for(var i = 0; i < layers.length; i++)
    {
-      //layers[i].drawLine();
       layers[i].movePoints(cursor);
-      layers[i].drawPoints(3, 2);
-      //layers[i].drawLine();
+      layers[i].drawPoints(4, 3);
    }
-   ellipse(startPoint.x, startPoint.y, 6);
 }
 /* TODO:
 - change of direction, wenn Punkt > rechte Grenze der Layer XXX
@@ -140,6 +116,8 @@ function draw()
    - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen,
      Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf XXX
    - weiterhin Startpunkt für Farben Startpunkt bei 0.75 unten rechts XXX
-   - implementieren, dass aus mehreren Farbkombis ausgewählt wird
+   - implementieren, dass aus mehreren Farbkombis ausgewählt wird XXX
 - lines popping up
+- option for following cursor
+- size of dot as a function of position on layer for more realistic look
 */

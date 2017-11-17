@@ -13,12 +13,36 @@
    <script src="sphere.functions.js"></script>
    <script src="sphere.sketch.js"></script>
 
-   <link rel="stylesheet" type="text/css" href="style.css">
-   <style> body {padding: 0; margin: 0;} </style>
+   <style>
+      body {
+         padding: 0;
+         margin: 0;
+         background-color: black;
+         color: white;
+         display: inline;
+      }
+      label {
+         font-family: monospace;
+         color: white;
+         margin-left: 5px;
+         font-size: 13px;
+      }
+      input {
+         margin-left: 10px;
+         margin-right: 3px;
+      }
+      input, label {
+         float: right;
+      }
+      #sketch-holder {
+         display: inline;
+      }
+   </style>
 </head>
 
 <body>
    <div id="sketch-holder"></div>
+   <input type="checkbox" name="follow" id="follow"><label for="follow">follow cursor</label>
 </body>
 
 </html>

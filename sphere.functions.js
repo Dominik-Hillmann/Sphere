@@ -10,6 +10,25 @@ var partialDist = function(start, length, percent)
    return start + Math.round(length * percent);
 }
 
+//
+class ColorGradient
+{
+   constructor(startR, startG, startB, endR, endG, endB)
+   {
+      this.start =
+      {
+         r : startR,
+         b : startG,
+         g : startB
+      };
+      this.end =
+      {
+         r : endR,
+         g : endG,
+         b : endB
+      };
+   }
+}
 
 // cursor that has information about its own past position
 class Cursor
@@ -27,8 +46,7 @@ class Cursor
       {
          x : x,
          y : y
-      };
-                                                         // only 0.1% of the speed because too fast otherwise
+      };                                                // only 0.1% of the speed because too fast otherwise
       this.relX = ((this.current.x - WIDTH / 2) / WIDTH) * 0.001;
    }
 
@@ -41,18 +59,6 @@ class Cursor
       this.current.y = winMouseY;
 
       this.relX = ((this.current.x - WIDTH / 2) / WIDTH) * 0.05;
-      //console.log(this.relX);
-      /*if(cursor.current.x <= WIDTH / 2)
-         this.relX = map(cursor.current.x, 0, middlePoint.x, -1, 0);
-      else
-         this.relX = map(cursor.current.x, 0, middlePoint.x, 0, 1);*/
-      //this.relX = map(this.current.x, 0, WIDTH, -1, 1);
-
-      // relX shows the cursor's position in realation the the x value of the middlePoint
-      // it can have the values of [-1, 1], meaning
-      // that if the cursor is at the most left position, it will have the value -1
-      // and 1 of it is at the right edge of the canvas
-      // the points on each layer will follow it: -1 == at left edge of layer; 1 == at right edge
    }
 }
 
@@ -99,7 +105,6 @@ class Layer
       this.points = [];
    }
 
-
    // new point that will move along this layer's height between left.x and right.x
    newPointsOnLayer(howMany)
    {
@@ -108,36 +113,32 @@ class Layer
       // top to bottom: each layer is divided into unequal parts:
       // the first 0 to 10 percent, 10 to 25 percent, 25 to 75 percent, 75 to 90, 90 to 100 percent
       // the smaller areas on the side are supposed to have a bigger probability of points falling into them
-      var area1Left =
+      var area1Left = // first left
       [
          this.left.x,
          partialDist(this.left.x, layerLen, 0.1)
-      ]; // first left
-      var area2Left =
+      ];
+      var area2Left = // second left
       [
          partialDist(this.left.x, layerLen, 0.1),
          partialDist(this.left.x, layerLen, 0.25)
-      ]; // second left
-      var area3 =
+      ];
+      var area3 = // middle
       [
          partialDist(this.left.x, layerLen, 0.25),
          partialDist(this.left.x, layerLen, 0.75)
-      ]; // middle
-      var area2Right =
+      ];
+      var area2Right = // second right
       [
          partialDist(this.left.x, layerLen, 0.75),
          partialDist(this.left.x, layerLen, 0.9)
-      ]; // second right
-      var area1Right =
+      ];
+      var area1Right = // frist right
       [
          partialDist(this.left.x, layerLen, 0.9),
          this.right.x
-      ]; // frist right
-      // console.log("Areas: ", area1Left, area2Left, area3, area2Right, area1Right);
-      // console.log("von ", this.left.x, " bis ", this.right.x);
-
+      ];
       // DAMIT NICHT ZU HARTE KANTEN BEREICHE UEBERLAPPEN LASSEN
-
       // here is where the areas are assigned probabilities of points falling into them
       // we want 50 percent for area1, 30 for area2, 20 for area3
       var odds = Math.random();
@@ -204,23 +205,31 @@ class Layer
       }
       else  // sphere rotates with time/frames
       {
+         for(var i = 0; i < this.points.length; i++)
+         {
+            var point = this.points[i];
+            if(point.secondTier)
+               point.x += this.layerLen * (-1 * 0.001);
+            else
+               point.x += this.layerLen * 0.001;
+            // at last, the change of direction, if the point happens to step over the layer's border
+            if((point.x > this.right.x) || (point.x < this.left.x))
+               point.secondTier = !point.secondTier;
+         }
       }
    }
 
    // sets
-   colorize(startPoint)
+   colorize(startPoint, cg)
    {
       // startPoint: point where color gradient starts
       for(var i = 0; i < this.points.length; i++)
       {
-         // setting colors
-         // starting 0.75 bottom right r161 g44 b52
-         // ending r217 g84 b39
          var point = this.points[i];
          var dist = distance(point.x, point.x, startPoint);
-         point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, 14, 204));
-         point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, 255, 255));
-         point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, 255, 19));
+         point.color.r = Math.round(map(dist, 0, SPHERE_RADIUS, cg.start.r, cg.end.r));
+         point.color.g = Math.round(map(dist, 0, SPHERE_RADIUS, cg.start.g, cg.end.g));
+         point.color.b = Math.round(map(dist, 0, SPHERE_RADIUS, cg.start.b, cg.end.b));
       }
    }
 
@@ -255,7 +264,6 @@ class Layer
                alpha -= 90;
             }
          }
-
          else
             ellipse(point.x, point.y, size1stTier);
 
@@ -280,11 +288,3 @@ class Layer
       line(this.left.x, this.left.y, this.right.x, this.right.y);
    }
 }
-
-/*class Circle
-{
-   constructor(layers)
-   {
-      this.layers = layers;
-   }
-}*/
