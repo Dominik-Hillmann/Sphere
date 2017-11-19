@@ -1,17 +1,18 @@
 const SPHERE_RADIUS = 255;
-const WIDTH = window.innerHeight - 15;
+const WIDTH = window.innerHeight - 15; // -15 so there will be no scrollbars
 const HEIGHT = window.innerHeight - 15;
-const CURSOR_MOVE = false;
+
+var cursor;
+var startPoint;
 var middlePoint = new Position(WIDTH / 2, HEIGHT / 2);
 var layers = [];
+var followCursor = document.getElementById("follow");
 var colorGradient =
 [
    new ColorGradient(243, 29, 52, 247, 159, 39),
    new ColorGradient(14, 255, 255, 204, 255, 19),
    new ColorGradient(10, 48, 255, 16, 216, 255)
 ];
-var cursor;
-var startPoint;
 
 function setup()
 {
@@ -104,7 +105,7 @@ function draw()
    for(var i = 0; i < layers.length; i++)
    {
       layers[i].movePoints(cursor);
-      layers[i].drawPoints(4, 3);
+      layers[i].drawPoints(10, 2);
    }
 }
 /* TODO:
@@ -112,12 +113,12 @@ function draw()
 - dann hat die Differenzaddierung den umgekehrten Effekt: Punkte laufen in die andere Richtung XXX
 - remove bug at the edges of the circle
 - colors
-   - Schleiereffekt
-   - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen,
+   - Schleiereffekt XXX
+   - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen, XXX
      Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf XXX
    - weiterhin Startpunkt für Farben Startpunkt bei 0.75 unten rechts XXX
    - implementieren, dass aus mehreren Farbkombis ausgewählt wird XXX
 - lines popping up
-- option for following cursor
+- option for following cursor XXX
 - size of dot as a function of position on layer for more realistic look
 */

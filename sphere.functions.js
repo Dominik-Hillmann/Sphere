@@ -138,19 +138,16 @@ class Layer
          partialDist(this.left.x, layerLen, 0.9),
          this.right.x
       ];
-      // DAMIT NICHT ZU HARTE KANTEN BEREICHE UEBERLAPPEN LASSEN
       // here is where the areas are assigned probabilities of points falling into them
       // we want 50 percent for area1, 30 for area2, 20 for area3
       var odds = Math.random();
       var selectedAreas;
-
       if(odds < 0.5) // if odds are around 50 percent, area1 gets selected
          selectedAreas = [area1Left, area1Right];
       else if((odds > 0.5) && (odds < 0.8)) // other 30 percent, area2 will be selected
          selectedAreas = [area2Left, area2Right];
       else // the other 20 percent, so 0.8 to 1.0 will get area3 selected
          selectedAreas = area3;
-
       // both parts of an area need to be selected because both together have the overall probability assigned
       // since areas 1 and 2 are divided into two and area 3 is kept together, they need to be treated differently
       if(selectedAreas[0].length == 2) // so area 1 or 2
@@ -189,7 +186,7 @@ class Layer
 
    movePoints(cursor)
    {
-      if(CURSOR_MOVE) // rotation follows the cursor
+      if(follow.checked) // rotation follows the cursor
       {
          for(var i = 0; i < this.points.length; i++)
          {
@@ -234,7 +231,7 @@ class Layer
    }
 
    // draws the array of points in this layer
-   drawPoints(size1stTier, size2ndTier)
+   drawPoints(maxSize1stTier, maxSize2ndTier)
    {
       for(var i = 0; i < this.points.length; i++)
       {
@@ -244,14 +241,14 @@ class Layer
          var b = point.color.b;
          var x = point.x;
          var y = point.y;
+         var left = this.left.x;
+         var right = this.right.x;
          var alpha = 255;
 
          stroke(r, g, b);
          fill(r, g, b);
 
          // three drawings with three alphas
-
-
          if(point.secondTier)
          {
             for(var j = 0; j < 3; j++)
@@ -267,14 +264,27 @@ class Layer
          else
             ellipse(point.x, point.y, size1stTier);
 
+
+         var size1stTier = map(x, left, right - this.layerLen / 2, maxSize1stTier, maxSize2ndTier);
+         var size2ndTier = map(x, left + this.layerLen / 2, right, maxSize2ndTier, maxSize1stTier);
+         // console.log("1st", size1stTier);
+         // console.log("2nd", size2ndTier);
+
          for(var j = 0; j < 3; j++)
          {
             stroke(r, g, b, alpha)
             fill(r, g, b, alpha);
             if(point.secondTier)
-               ellipse(x, y, size2ndTier);
+            {
+               if(point.x <= WIDTH / 2)
+                  ellipse(x, y, map(x, left + this.layerLen / 2, right, maxSize2ndTier, maxSize1stTier));
+               else
+                  ellipse(x, y, map(x, left, right - this.layerLen / 2, maxSize1stTier, maxSize2ndTier));
+            }
             else
-               ellipse(x, y, size1stTier);
+            {
+               //ellipse(x, y, size1stTier);
+            }
             x -= 2;
             y -= 2;
             alpha -= 90;
