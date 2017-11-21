@@ -77,6 +77,9 @@ function setup()
             sortedByYPos[sortedByYPos.length - 1].y
          ));
       } // for
+      layers.splice(0, 1);
+      layers.splice(layers.length - 1, 1);
+
 
       // colorizing the dots with a color gradient
       var r = Math.random();
@@ -105,7 +108,7 @@ function draw()
    for(var i = 0; i < layers.length; i++)
    {
       layers[i].movePoints(cursor);
-      layers[i].drawPoints(10, 2);
+      layers[i].drawPoints(2, 6);
    }
 }
 /* TODO:
@@ -120,5 +123,5 @@ function draw()
    - implementieren, dass aus mehreren Farbkombis ausgewählt wird XXX
 - lines popping up
 - option for following cursor XXX
-- size of dot as a function of position on layer for more realistic look
+- size of dot as a function of position on layer for more realistic look XXX
 */
