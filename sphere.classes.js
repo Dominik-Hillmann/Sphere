@@ -95,10 +95,10 @@ class Layer
    }
 
    // new point that will move along this layer's height between left.x and right.x
-   newPointsOnLayer(howMany)
+   addPoints(amount)
    {
       // first decide, how many points there will be on this layer
-      var layerLen = this.right.x - this.left.x;
+      var layerLen = this.layerLen;
       // top to bottom: each layer is divided into unequal parts:
       // the first 0 to 10 percent, 10 to 25 percent, 25 to 75 percent, 75 to 90, 90 to 100 percent
       // the smaller areas on the side are supposed to have a bigger probability of points falling into them
@@ -142,7 +142,7 @@ class Layer
       if(selectedAreas[0].length == 2) // so area 1 or 2
       {
          var iterationArea; // to select left or right half based on random number
-         for(var i = 1; i <= howMany; i++)
+         for(var i = 1; i <= amount; i++)
          {
             var randPos = Math.random(); // new random position within selectedArea every iteration
             if((randPos <= 0.5) && (selectedAreas.length == 2)) // whether to choose left or right side
@@ -162,7 +162,7 @@ class Layer
       }
       else // so area 3 is selected --> no need to decide between
       {
-         for(var i = 1; i <= howMany; i++)
+         for(var i = 1; i <= amount; i++)
          {
             this.points.push(new CirclePos
             (
@@ -175,6 +175,7 @@ class Layer
 
    movePoints(cursor)
    {
+      var len = this.layerLen;
       if(follow.checked) // rotation follows the cursor
       {
          for(var i = 0; i < this.points.length; i++)
@@ -195,9 +196,9 @@ class Layer
          {
             var point = this.points[i];
             if(point.secondTier)
-               point.x += this.layerLen * (-1 * 0.001);
+               point.x += len * (-1 * 0.001);
             else
-               point.x += this.layerLen * 0.001;
+               point.x += len * 0.001;
             // at last, the change of direction, if the point happens to step over the layer's border
             if((point.x > this.right.x) || (point.x < this.left.x))
                point.secondTier = !point.secondTier;

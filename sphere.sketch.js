@@ -94,7 +94,7 @@ function setup()
       // colorizing with startPoint from before as starting position for color gradient
       for(var i = 0; i < layers.length; i++)
       {
-         layers[i].newPointsOnLayer(2);
+         layers[i].addPoints(2);
          layers[i].colorize(startPoint, colorGradient);
       } // for
    } // else
