@@ -111,17 +111,3 @@ function draw()
       layers[i].drawPoints(2, 6);
    }
 }
-/* TODO:
-- change of direction, wenn Punkt > rechte Grenze der Layer XXX
-- dann hat die Differenzaddierung den umgekehrten Effekt: Punkte laufen in die andere Richtung XXX
-- remove bug at the edges of the circle
-- colors
-   - Schleiereffekt XXX
-   - Loesung dazu: Farbenverlauf raussuchen, imaginäre Linie von oben links nach unten rechts ziehen, XXX
-     Position darauf ermitteln, das für alle 3 Unterschiede auf 0 bis 255 mappen --> Farbenverlauf XXX
-   - weiterhin Startpunkt für Farben Startpunkt bei 0.75 unten rechts XXX
-   - implementieren, dass aus mehreren Farbkombis ausgewählt wird XXX
-- lines popping up
-- option for following cursor XXX
-- size of dot as a function of position on layer for more realistic look XXX
-*/
